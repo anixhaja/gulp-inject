@@ -5,7 +5,7 @@ var PluginError = require('plugin-error');
 var colors = require('ansi-colors');
 var streamToArray = require('stream-to-array');
 var escapeStringRegexp = require('escape-string-regexp');
-var groupArray = require('group-array');
+var _ = require('underscore');
 var extname = require('../extname');
 var transform = require('../transform');
 var tags = require('../tags');
@@ -116,7 +116,9 @@ function getNewContent(target, collection, opt) {
   var content = String(target.contents);
   var targetExt = extname(target.path);
   var files = prepareFiles(collection, targetExt, opt, target);
-  var filesPerTags = groupArray(files, 'tagKey');
+  // var filesPerTags = groupArray(files, 'tagKey');
+  var filesPerTags = _.map(_.groupBy(files, 'tagKey'),
+    clist => clist.map(car => _.omit(car, 'tagKey')));
   var startAndEndTags = Object.keys(filesPerTags);
   var matches = [];
   var injectedFilesCount = 0;
